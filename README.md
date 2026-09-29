@@ -7,7 +7,7 @@ Vanilla HTML/CSS/JavaScript. No framework, no build step, no audio files — the
 chiptune soundtrack and every explosion are synthesized live with the Web Audio
 API.
 
-**▶ Play it: https://bjlarsen9-beep.github.io/battleship-8000/**
+**▶ Play it: https://bs-dist-furwwnbl.devinapps.com**
 
 ## How to play
 

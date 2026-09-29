@@ -1,0 +1,14 @@
+{
+  "name": "battleship-8000",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "1980s arcade-cabinet Battleship against THE ADMIRAL 8000.",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "serve": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

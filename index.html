@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>BATTLESHIP 8000 — Atari-Style Naval Combat vs. THE ADMIRAL</title>
+<meta name="description" content="A 1980s arcade-cabinet Battleship game. You versus THE ADMIRAL 8000, a rude artificial intelligence with too many torpedoes." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%23050014'/><rect x='2' y='7' width='12' height='3' fill='%2300f0ff'/><rect x='7' y='3' width='2' height='4' fill='%23ff2e88'/></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="cabinet">
+  <div class="bezel">
+    <div class="screen" id="screen">
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="glare" aria-hidden="true"></div>
+      <div class="flash" id="flash" aria-hidden="true"></div>
+      <div class="banner" id="banner" aria-hidden="true"><div class="banner__text" id="bannerText"></div></div>
+      <div class="ticker" aria-hidden="true"><div class="ticker__inner" id="ticker"></div></div>
+
+      <!-- ============ BOOT ============ -->
+      <section class="view view--boot is-active" id="view-boot">
+        <pre class="boot-text" id="bootText"></pre>
+      </section>
+
+      <!-- ============ TITLE ============ -->
+      <section class="view view--title" id="view-title">
+        <div class="title-stack">
+          <div class="logo">
+            <span class="logo__line logo__line--1">BATTLESHIP</span>
+            <span class="logo__line logo__line--2">8 0 0 0</span>
+          </div>
+          <p class="subtitle">&#9670; NAVAL COMBAT SIMULATOR &#9670; 1 PLAYER VS. THE ADMIRAL &#9670;</p>
+
+          <div class="attract" id="attract" aria-hidden="true"></div>
+
+          <div class="diff-picker" role="radiogroup" aria-label="Select difficulty">
+            <p class="diff-picker__label">SELECT ENEMY BRAIN</p>
+            <div class="diff-picker__row" id="diffRow"></div>
+            <p class="diff-blurb" id="diffBlurb"></p>
+          </div>
+
+          <button class="btn btn--big pulse" id="startBtn">PRESS FIRE TO DEPLOY</button>
+          <p class="blink insert-coin">&#9654; INSERT COIN &#9664;</p>
+
+          <p class="credits">HI-SCORE <b id="hiScoreTitle">000000</b> &#9642; CREDITS 99 &#9642; &copy; 198X COGNITION NAVAL WORKS</p>
+          <p class="hint">KEYS: ARROWS MOVE &#9642; ENTER FIRE &#9642; R ROTATE &#9642; M MUTE</p>
+        </div>
+      </section>
+
+      <!-- ============ DEPLOY ============ -->
+      <section class="view view--deploy" id="view-deploy">
+        <header class="bar">
+          <h2 class="bar__title">DEPLOY YOUR FLEET</h2>
+          <div class="bar__right">
+            <button class="btn btn--tiny" id="muteBtn2" title="Toggle sound">SOUND: ON</button>
+          </div>
+        </header>
+        <div class="deploy-wrap">
+          <div class="grid-panel">
+            <div class="grid-panel__title">HOME WATERS</div>
+            <div class="board" id="deployBoard"></div>
+            <p class="deploy-tip" id="deployTip">CLICK A CELL TO DROP THE SHIP &#9642; PRESS <b>R</b> OR RIGHT-CLICK TO ROTATE</p>
+          </div>
+          <aside class="dock">
+            <div class="dock__title">DRY DOCK</div>
+            <ul class="dock__list" id="dockList"></ul>
+            <div class="dock__actions">
+              <button class="btn" id="rotateBtn">ROTATE [R]</button>
+              <button class="btn" id="randomBtn">SCRAMBLE FLEET</button>
+              <button class="btn" id="clearBtn">CLEAR DOCK</button>
+              <button class="btn btn--go" id="battleBtn" disabled>ENGAGE!</button>
+            </div>
+            <p class="dock__flavor" id="dockFlavor">The Admiral is tapping its foot. It does not have feet.</p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ BATTLE ============ -->
+      <section class="view view--battle" id="view-battle">
+        <header class="bar">
+          <div class="score" id="scoreBox">SCORE <b id="scoreVal">000000</b> <span class="score__hi">HI <b id="hiScoreVal">000000</b></span></div>
+          <h2 class="bar__title" id="turnTitle">YOUR TURN — FIRE!</h2>
+          <div class="bar__right">
+            <span class="hud-chip" id="diffChip">CAPTAIN</span>
+            <button class="btn btn--tiny" id="muteBtn" title="Toggle sound">SOUND: ON</button>
+            <button class="btn btn--tiny" id="quitBtn">ABORT</button>
+          </div>
+        </header>
+
+        <div class="battle-wrap">
+          <div class="grid-panel grid-panel--enemy">
+            <div class="grid-panel__title">ENEMY WATERS <span class="tag tag--fire">FIRE HERE</span></div>
+            <div class="board board--enemy" id="enemyBoard"></div>
+            <ul class="roster" id="enemyRoster"></ul>
+          </div>
+
+          <div class="center-col">
+            <div class="radar" id="radar">
+              <div class="radar__sweep"></div>
+              <div class="radar__ring"></div>
+              <div class="radar__ring radar__ring--2"></div>
+            </div>
+            <div class="chatter">
+              <div class="chatter__title">&#9673; RADIO CHATTER</div>
+              <ul class="chatter__log" id="log"></ul>
+            </div>
+            <div class="stats">
+              <span>SHOTS <b id="statShots">0</b></span>
+              <span>ACC <b id="statAcc">0%</b></span>
+              <span>STREAK <b id="statStreak">0</b></span>
+            </div>
+          </div>
+
+          <div class="grid-panel grid-panel--home">
+            <div class="grid-panel__title">HOME WATERS <span class="tag">YOUR FLEET</span></div>
+            <div class="board board--home" id="homeBoard"></div>
+            <ul class="roster" id="homeRoster"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ GAME OVER ============ -->
+      <section class="view view--over" id="view-over">
+        <div class="over-stack">
+          <h2 class="over__headline" id="overHeadline">VICTORY</h2>
+          <p class="over__sub" id="overSub"></p>
+          <div class="over__stats" id="overStats"></div>
+          <p class="minimap-label">WHERE THE ENEMY FLEET WAS HIDING</p>
+          <div class="minimap" id="minimap"></div>
+          <div class="over__rank" id="overRank"></div>
+          <div class="over__actions">
+            <button class="btn btn--big" id="againBtn">PLAY AGAIN</button>
+            <button class="btn" id="titleBtn">TITLE SCREEN</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="cabinet__panel">
+    <span class="cabinet__brand">BATTLESHIP 8000</span>
+    <span class="cabinet__joy" aria-hidden="true"></span>
+    <span class="cabinet__btn cabinet__btn--red" aria-hidden="true"></span>
+    <span class="cabinet__btn cabinet__btn--blue" aria-hidden="true"></span>
+    <span class="cabinet__coin">1 PLAY = 1 COIN</span>
+  </div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -31,7 +31,30 @@ export class Chiptune {
   setEnabled(on) {
     this.enabled = on;
     if (this.master) this.master.gain.value = on ? 0.28 : 0;
-    if (!on) this.stopMusic();
+    if (!on) {
+      this.stopMusic();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+  }
+
+  /**
+   * Say something out loud. Speech synthesis is unavailable or voiceless in
+   * plenty of environments, so every failure here is silent by design.
+   */
+  speak(text, { rate = 0.9, pitch = 0.6 } = {}) {
+    if (!this.enabled) return;
+    const synth = window.speechSynthesis;
+    if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') return;
+    try {
+      synth.cancel();
+      const utter = new window.SpeechSynthesisUtterance(text);
+      utter.rate = rate;
+      utter.pitch = pitch;
+      utter.volume = 1;
+      synth.speak(utter);
+    } catch {
+      /* no voice, no problem */
+    }
   }
 
   noise() {

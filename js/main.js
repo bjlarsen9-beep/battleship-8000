@@ -13,7 +13,7 @@ const rng = makeRng();
 
 const S = {
   view: 'boot',
-  difficulty: 'CAPTAIN',
+  difficulty: 'BATTLE_STATIONS',
   player: createBoard(),
   enemy: createBoard(),
   ai: null,
@@ -206,7 +206,7 @@ function buildDiffPicker() {
     row.appendChild(b);
   }
   $('diffBlurb').textContent = DIFFICULTIES[S.difficulty].blurb;
-  $('diffChip').textContent = S.difficulty;
+  $('diffChip').textContent = DIFFICULTIES[S.difficulty].label;
 }
 
 /* ======================= grid building ======================= */
@@ -393,7 +393,7 @@ function toBattle() {
   updateHud();
   audio.startMusic('battle');
   log('sys', 'BATTLE STATIONS! Enemy fleet detected in sector 7-G.');
-  log('ai', `THE ADMIRAL 8000 (${S.difficulty}) online: "${DIFFICULTIES[S.difficulty].blurb}"`);
+  log('ai', `THE ADMIRAL 8000 — ${DIFFICULTIES[S.difficulty].label}: "${DIFFICULTIES[S.difficulty].blurb}"`);
 }
 
 function log(kind, text) {
@@ -415,7 +415,8 @@ function renderRosters() {
       const hp = hideIntact && !ship.sunk
         ? '?'.repeat(ship.size)
         : '\u25a0'.repeat(ship.size - ship.hits) + '\u25a1'.repeat(ship.hits);
-      li.innerHTML = `<span>${ship.name}</span><span class="hp">${hp}</span>`;
+      const label = hideIntact ? ship.name : `${ship.name} <i>${ship.hull}</i>`;
+      li.innerHTML = `<span>${label}</span><span class="hp">${hp}</span>`;
       el.appendChild(li);
     }
   };
@@ -504,7 +505,8 @@ async function playerFire(r, c) {
       shake();
       markSunk($('enemyBoard'), S.enemy, res.ship);
       banner(`${res.ship.name}\nSUNK!`);
-      log('you', `${coordLabel(r, c)} — ENEMY ${res.ship.name} DESTROYED!`);
+      audio.speak('You sunk my battleship!', { pitch: 0.4 });
+      log('you', `${coordLabel(r, c)} — ENEMY ${res.ship.name} (${res.ship.hull}) DESTROYED!`);
       log('ai', taunt('playerSunk', rng));
     } else {
       log('you', `FIRE at ${coordLabel(r, c)} ... DIRECT HIT!`);
@@ -572,6 +574,7 @@ async function aiTurn(gen) {
       audio.sink();
       markSunk($('homeBoard'), S.player, res.ship);
       banner(`YOUR ${res.ship.name}\nIS GONE`);
+      audio.speak('You sunk my battleship!', { pitch: 1.1 });
       log('ai', `${coordLabel(shot.r, shot.c)} — your ${res.ship.name} is gone. ${taunt('aiSunk', rng)}`);
     } else {
       log('ai', `${coordLabel(shot.r, shot.c)} — ${taunt('aiHit', rng)}`);
@@ -620,7 +623,7 @@ function endGame(won) {
     `ACCURACY ............. ${Math.round(acc * 100)}%`,
     `BEST STREAK .......... ${S.bestStreak}`,
     `SHIPS STILL AFLOAT ... ${survivors} / ${FLEET.length}`,
-    `ENEMY BRAIN .......... ${S.difficulty}`
+    `ENGAGEMENT ........... ${DIFFICULTIES[S.difficulty].label}`
   ].map((line) => `<span>${line}</span>`).join('');
   const rank = RANKS.find((r) => acc >= r.min) || RANKS[RANKS.length - 1];
   $('overRank').textContent = `RANK: ${won ? rank.name : 'SHIPWRECKED ' + rank.name}`;

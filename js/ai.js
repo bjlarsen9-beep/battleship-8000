@@ -1,30 +1,25 @@
 // The enemy commander: THE ADMIRAL 8000.
-// Three brains, all of them talk trash. The AI only ever reads the public
+// Two brains, both of them talk trash. The AI only ever reads the public
 // shot grid (EMPTY/MISS/HIT) plus results it is told about — it cannot peek
 // at the player's ship positions.
 
 import { EMPTY, MISS, HIT, FLEET, makeRng } from './engine.js';
 
 export const DIFFICULTIES = {
-  ENSIGN: {
-    id: 'ENSIGN',
-    label: 'ENSIGN  (drunk)',
-    blurb: 'Fires wildly. Occasionally hits the ocean on purpose.'
+  SHORE_LEAVE: {
+    id: 'SHORE_LEAVE',
+    label: 'SHORE LEAVE',
+    blurb: 'The Admiral fires wildly and blames the tide. Your best shot.'
   },
-  CAPTAIN: {
-    id: 'CAPTAIN',
-    label: 'CAPTAIN (sober)',
-    blurb: 'Hunts on a checkerboard, finishes what it starts.'
-  },
-  ADMIRAL: {
-    id: 'ADMIRAL',
-    label: 'ADMIRAL (rude)',
-    blurb: 'Runs probability density maps. Will roast you.'
+  BATTLE_STATIONS: {
+    id: 'BATTLE_STATIONS',
+    label: 'BATTLE STATIONS',
+    blurb: 'Probability density maps, relentless pursuit, zero manners.'
   }
 };
 
 export class BattleshipAI {
-  constructor({ difficulty = 'CAPTAIN', size = 10, rng = makeRng(), fleet = FLEET } = {}) {
+  constructor({ difficulty = 'BATTLE_STATIONS', size = 10, rng = makeRng(), fleet = FLEET } = {}) {
     this.difficulty = difficulty;
     this.size = size;
     this.rng = rng;
@@ -158,14 +153,6 @@ export class BattleshipAI {
     return picks.length ? this.pick(picks) : null;
   }
 
-  /** Checkerboard hunt spaced by the smallest surviving ship. */
-  parityHunt(grid) {
-    const step = Math.max(2, Math.min(...this.remainingSizes));
-    const cells = this.untried(grid).filter((p) => (p.r + p.c) % step === 0);
-    const pool = cells.length ? cells : this.untried(grid);
-    return pool.length ? this.pick(pool) : null;
-  }
-
   /**
    * Choose a shot.
    * @param {number[][]} grid the public shot grid of the board being attacked
@@ -176,18 +163,14 @@ export class BattleshipAI {
 
     const targets = this.targetCandidates(grid);
 
-    if (this.difficulty === 'ENSIGN') {
+    if (this.difficulty === 'SHORE_LEAVE') {
       // Sloppy: only follows up on a hit a third of the time.
       if (targets.length && this.rng() < 0.33) return this.pick(targets);
       return this.pick(open);
     }
 
     if (targets.length) return this.pick(targets);
-
-    if (this.difficulty === 'ADMIRAL') {
-      return this.bestFromDensity(grid) || this.pick(open);
-    }
-    return this.parityHunt(grid) || this.pick(open);
+    return this.bestFromDensity(grid) || this.pick(open);
   }
 
   /**

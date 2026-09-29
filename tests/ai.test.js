@@ -34,26 +34,24 @@ for (const difficulty of Object.keys(DIFFICULTIES)) {
   });
 }
 
-test('difficulty ordering: ADMIRAL < CAPTAIN < ENSIGN in shots needed', () => {
+test('difficulty ordering: BATTLE STATIONS is much deadlier than SHORE LEAVE', () => {
   const avg = (d) => {
     let total = 0;
     const runs = 200;
     for (let s = 1; s <= runs; s++) total += playOut(d, s);
     return total / runs;
   };
-  const ensign = avg('ENSIGN');
-  const captain = avg('CAPTAIN');
-  const admiral = avg('ADMIRAL');
-  assert.ok(admiral < captain, `admiral ${admiral} should beat captain ${captain}`);
-  assert.ok(captain < ensign, `captain ${captain} should beat ensign ${ensign}`);
-  assert.ok(admiral < 60, `admiral should average under 60 shots, got ${admiral}`);
-  assert.ok(ensign > 62, `ensign should be sloppy, got ${ensign}`);
+  const easy = avg('SHORE_LEAVE');
+  const hard = avg('BATTLE_STATIONS');
+  assert.ok(hard < easy - 10, `hard ${hard} should clearly beat easy ${easy}`);
+  assert.ok(hard < 60, `hard should average under 60 shots, got ${hard}`);
+  assert.ok(easy > 62, `easy should be sloppy, got ${easy}`);
 });
 
 test('AI never shoots outside the board', () => {
   const board = createBoard();
   randomizeFleet(board, makeRng(3));
-  const ai = new BattleshipAI({ difficulty: 'ADMIRAL', rng: makeRng(3) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(3) });
   while (!fleetSunk(board)) {
     const shot = ai.nextShot(board.grid);
     assert.ok(shot.r >= 0 && shot.r < 10 && shot.c >= 0 && shot.c < 10);
@@ -81,7 +79,7 @@ test('AI chases a wounded ship instead of wandering off', () => {
       { r: 4, c: 3 }, { r: 4, c: 4 }, { r: 4, c: 5 }
     ], hits: 0, sunk: false
   });
-  const ai = new BattleshipAI({ difficulty: 'CAPTAIN', rng: makeRng(9) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(9) });
   fire(board, 4, 4);
   ai.notify({ result: 'hit', r: 4, c: 4 });
   const next = ai.nextShot(board.grid);
@@ -90,7 +88,7 @@ test('AI chases a wounded ship instead of wandering off', () => {
 });
 
 test('AI extends along the axis once two hits line up', () => {
-  const ai = new BattleshipAI({ difficulty: 'CAPTAIN', rng: makeRng(4) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(4) });
   const grid = Array.from({ length: 10 }, () => new Array(10).fill(EMPTY));
   grid[4][4] = 2; grid[4][5] = 2;
   ai.notify({ result: 'hit', r: 4, c: 4 });
@@ -103,7 +101,7 @@ test('AI extends along the axis once two hits line up', () => {
 });
 
 test('sinking clears the chase so the AI resumes hunting', () => {
-  const ai = new BattleshipAI({ difficulty: 'CAPTAIN', rng: makeRng(5) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(5) });
   ai.notify({ result: 'hit', r: 0, c: 0 });
   ai.notify({ result: 'sunk', r: 0, c: 1, shipSize: 2 });
   assert.equal(ai.activeHits.length, 0);
@@ -114,7 +112,7 @@ test('sinking clears the chase so the AI resumes hunting', () => {
 test('a sink inside a cluster of touching ships does not strand the AI', () => {
   // Two ships side by side: the AI cannot tell which hits belonged to which,
   // so it must drop its tracked hits rather than loop forever.
-  const ai = new BattleshipAI({ difficulty: 'CAPTAIN', rng: makeRng(6) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(6) });
   ai.notify({ result: 'hit', r: 5, c: 5 });
   ai.notify({ result: 'hit', r: 6, c: 5 });
   ai.notify({ result: 'sunk', r: 5, c: 6, shipSize: 2 });
@@ -122,7 +120,7 @@ test('a sink inside a cluster of touching ships does not strand the AI', () => {
 });
 
 test('density map never scores a cell that was already shot', () => {
-  const ai = new BattleshipAI({ difficulty: 'ADMIRAL', rng: makeRng(2) });
+  const ai = new BattleshipAI({ difficulty: 'BATTLE_STATIONS', rng: makeRng(2) });
   const grid = Array.from({ length: 10 }, () => new Array(10).fill(EMPTY));
   grid[0][0] = 1;
   grid[5][5] = 2;
@@ -144,7 +142,7 @@ test('taunt always returns a non-empty string for every category', () => {
 
 test('AI wins in fewer shots than the 100-cell worst case', () => {
   for (let seed = 500; seed < 520; seed++) {
-    const shots = playOut('ADMIRAL', seed);
+    const shots = playOut('BATTLE_STATIONS', seed);
     assert.ok(shots >= FLEET_CELLS && shots <= TOTAL_CELLS, `got ${shots}`);
   }
 });

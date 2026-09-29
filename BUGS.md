@@ -9,10 +9,10 @@ Three layers, because different bug classes hide in different places:
 1. **Unit tests on a pure rules engine** (`tests/engine.test.js`, `tests/ai.test.js`).
    The rules and the AI have no DOM dependency, so they can be hammered
    headlessly. Everything random is driven by a seeded RNG, so a failure is
-   reproducible. The AI tests play **360 complete games** (120 per difficulty)
+   reproducible. The AI tests play **240 complete games** (120 per difficulty)
    and assert invariants rather than exact outcomes: never fire out of bounds,
    never fire twice on the same cell, always terminate, and difficulty ordering
-   holds (ADMIRAL < CAPTAIN < ENSIGN in average shots-to-win).
+   holds (BATTLE STATIONS clearly beats SHORE LEAVE in average shots-to-win).
 2. **A browser smoke test** (`tests/smoke.mjs`) that drives the real page in
    Chrome through Playwright: skip boot → pick a difficulty → deploy → play a
    full game to a win screen → replay. It fails on any console error and audits
@@ -174,10 +174,9 @@ view stayed on `title`.
 - **`npm test` couldn't find the tests.** `node --test tests/` made Node try to
   resolve `tests` as a *module* (`Cannot find module '.../tests'`) instead of
   globbing it. Changed to `node --test tests/*.test.js`.
-- **ENSIGN was too competent.** The "drunk" difficulty averaged ~65 shots to
-  win, close enough to CAPTAIN that the difficulty ladder was meaningless.
-  Dropped its follow-up-on-a-hit probability from 45% to 33% so it genuinely
-  wanders.
+- **The easy AI was too competent.** SHORE LEAVE averaged ~59 shots to win,
+  close enough to BATTLE STATIONS that the choice was meaningless. Dropped its
+  follow-up-on-a-hit probability from 45% to 33% so it genuinely wanders (~65).
 - **The AI was accidentally able to cheat.** The AI is handed only the public
   shot grid (`board.grid`), never `board.occupancy`. This is enforced by
   construction — `nextShot(grid)` takes the grid as an argument and the AI
@@ -189,7 +188,7 @@ view stayed on `title`.
 ## Running the tests yourself
 
 ```bash
-npm test                     # 26 rules + AI tests, no browser needed
+npm test                     # 25 rules + AI tests, no browser needed
 python3 -m http.server 8080  # in one terminal
 node tests/smoke.mjs         # full-game browser playthrough
 node tests/regressions.mjs   # the three bugs above

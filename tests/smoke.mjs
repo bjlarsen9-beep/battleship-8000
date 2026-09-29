@@ -29,9 +29,15 @@ await page.keyboard.press('Enter');
 await page.waitForSelector('#view-title.is-active', { timeout: 8000 });
 console.log('ok  title screen reached');
 
+// Exactly two difficulties, and ADMIRAL is the enemy, not an option.
+const diffCount = await page.locator('button[data-diff]').count();
+if (diffCount !== 2) fail(`expected 2 difficulty buttons, found ${diffCount}`);
+if (await page.locator('button[data-diff="ADMIRAL"]').count()) fail('ADMIRAL is still selectable');
+console.log('ok  two difficulty options offered');
+
 // Difficulty selection sticks.
-await page.click('button[data-diff="ADMIRAL"]');
-if (!(await page.locator('button[data-diff="ADMIRAL"]').getAttribute('class')).includes('is-sel')) {
+await page.click('button[data-diff="BATTLE_STATIONS"]');
+if (!(await page.locator('button[data-diff="BATTLE_STATIONS"]').getAttribute('class')).includes('is-sel')) {
   fail('difficulty button did not highlight');
 }
 

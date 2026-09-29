@@ -1,7 +1,7 @@
 # BATTLESHIP 8000
 
 A 1980s arcade-cabinet Battleship game. You versus **THE ADMIRAL 8000**, a
-naval AI with three difficulty settings and absolutely no manners.
+naval AI with two difficulty settings and absolutely no manners.
 
 Vanilla HTML/CSS/JavaScript. No framework, no build step, no audio files — the
 chiptune soundtrack and every explosion are synthesized live with the Web Audio
@@ -11,11 +11,16 @@ API.
 
 ## How to play
 
-1. **Pick your enemy brain** — ENSIGN (drunk), CAPTAIN (sober), or ADMIRAL (rude).
+1. **Pick how angry the Admiral is** — SHORE LEAVE or BATTLE STATIONS.
 2. **Deploy your fleet** in the dry dock. Click a ship, click the board.
    `R` rotates, SCRAMBLE randomizes the whole fleet, CLEAR empties the dock.
 3. **Fire** at ENEMY WATERS. Hit every cell of all five enemy ships before the
    Admiral sinks yours.
+
+The fleet is the real US Navy line-up: AIRCRAFT CARRIER (USS Nimitz, 5),
+BATTLESHIP (USS Missouri, 4), CRUISER (USS Ticonderoga, 3), SUBMARINE
+(USS Nautilus, 3), DESTROYER (USS Arleigh Burke, 2). Sink one and the cabinet
+says "You sunk my battleship!" out loud via speech synthesis.
 
 | Keys | |
 | --- | --- |
@@ -31,14 +36,13 @@ feared SEAGULL WRANGLER. Your high score lives in the cabinet
 
 ## The AI
 
-Three genuinely different opponents, none of which can see your ships — each
+Two genuinely different opponents, neither of which can see your ships — each
 is handed only the public shot grid, exactly what a human opponent would see.
 
 | Difficulty | Strategy | Avg. shots to clear a fleet |
 | --- | --- | --- |
-| **ENSIGN** | Fires at random; only follows up on a hit a third of the time. | ~65 |
-| **CAPTAIN** | Checkerboard parity hunt (no ship is smaller than 2 cells, so half the board can be skipped), then pursues wounded ships along the line of hits. | ~52 |
-| **ADMIRAL** | Probability-density targeting: for every empty cell, counts how many ways each surviving ship could still fit through it, and fires at the maximum. Then hunts wounded ships to the seabed. | ~44 |
+| **SHORE LEAVE** | Fires at random; only follows up on a hit a third of the time. | ~65 |
+| **BATTLE STATIONS** | Probability-density targeting: for every empty cell, counts how many ways each surviving ship could still fit through it, and fires at the maximum. Then hunts wounded ships to the seabed. | ~44 |
 
 ## Debugging document
 
@@ -51,10 +55,10 @@ Bugs found, how they were found, and how they were fixed:
 index.html          markup for all five screens (boot, title, deploy, battle, over)
 css/style.css       CRT/arcade styling — scanlines, neon, cabinet bezel
 js/engine.js        pure rules engine: board, fleet, placement, firing. No DOM.
-js/ai.js            the three AI brains + the taunt writers' room
+js/ai.js            the two AI brains + the taunt writers' room
 js/audio.js         Web Audio chiptune synth (no assets)
 js/main.js          screens, input, animation, game loop
-tests/*.test.js     26 headless rules + AI tests (node --test)
+tests/*.test.js     25 headless rules + AI tests (node --test)
 tests/smoke.mjs     full-game browser playthrough over CDP
 tests/regressions.mjs  one check per bug in BUGS.md
 ```

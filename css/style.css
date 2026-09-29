@@ -380,7 +380,7 @@ body {
 .deploy-wrap { display: flex; gap: 24px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
 .deploy-tip { font-size: 8px; color: #8fb6c8; margin-top: 10px; letter-spacing: 1px; }
 
-.dock { width: 290px; border: 2px solid var(--violet); padding: 12px; background: rgba(40,10,70,.35); }
+.dock { width: 320px; border: 2px solid var(--violet); padding: 12px; background: rgba(40,10,70,.35); }
 .dock__title { font-size: 10px; color: var(--violet); letter-spacing: 2px; margin-bottom: 10px; }
 .dock__list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
 .dock__item {
@@ -426,13 +426,15 @@ body {
 .stats { display: flex; justify-content: space-between; font-size: 8px; color: #8fb6c8; letter-spacing: 1px; }
 .stats b { color: #fff; }
 
-.roster { list-style: none; margin: 12px auto 0; padding: 0; display: grid; gap: 4px; max-width: 340px; }
+.roster { list-style: none; margin: 12px auto 0; padding: 0; display: grid; gap: 4px; max-width: 380px; }
 .roster li {
   font-size: 8px; display: flex; gap: 8px; align-items: center; letter-spacing: 1px;
   border-left: 3px solid var(--cyan); padding: 4px 6px; background: rgba(0,40,70,.35);
 }
 .roster li.is-sunk { border-left-color: var(--red); color: #ff8b84; text-decoration: line-through; opacity: .75; }
-.roster .hp { margin-left: auto; letter-spacing: 2px; color: var(--lime); }
+.roster .hp { margin-left: auto; letter-spacing: 2px; color: var(--lime); white-space: nowrap; }
+.roster i { font-style: normal; color: var(--violet); margin-left: 6px; }
+.roster li.is-sunk i { color: #a06a86; }
 .roster li.is-sunk .hp { color: var(--red); }
 
 /* ---------- game over ---------- */

@@ -4,11 +4,11 @@
 export const BOARD_SIZE = 10;
 
 export const FLEET = [
-  { id: 'carrier', name: 'STARCARRIER', size: 5, glyph: '#' },
-  { id: 'battleship', name: 'DREADNOUGHT', size: 4, glyph: '@' },
-  { id: 'cruiser', name: 'ION CRUISER', size: 3, glyph: '%' },
-  { id: 'submarine', name: 'SUB-ZERO', size: 3, glyph: '&' },
-  { id: 'destroyer', name: 'GNAT BOAT', size: 2, glyph: '*' }
+  { id: 'carrier', name: 'AIRCRAFT CARRIER', hull: 'USS NIMITZ', size: 5, glyph: '#' },
+  { id: 'battleship', name: 'BATTLESHIP', hull: 'USS MISSOURI', size: 4, glyph: '@' },
+  { id: 'cruiser', name: 'CRUISER', hull: 'USS TICONDEROGA', size: 3, glyph: '%' },
+  { id: 'submarine', name: 'SUBMARINE', hull: 'USS NAUTILUS', size: 3, glyph: '&' },
+  { id: 'destroyer', name: 'DESTROYER', hull: 'USS ARLEIGH BURKE', size: 2, glyph: '*' }
 ];
 
 export const EMPTY = 0;
@@ -66,6 +66,7 @@ export function placeShip(board, def, r, c, orientation) {
   const ship = {
     id: def.id,
     name: def.name,
+    hull: def.hull,
     size: def.size,
     glyph: def.glyph,
     orientation,

@@ -474,5 +474,6 @@ body {
   .bar__title { font-size: 10px; width: 100%; order: 3; }
   .cabinet__panel { flex-wrap: wrap; gap: 10px; font-size: 8px; }
   .cabinet__coin { margin-left: 0; width: 100%; }
-  .ticker { font-size: 8px; }
+  .ticker { display: none; }
+  .view { padding-bottom: 12px; }
 }

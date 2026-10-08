@@ -5,7 +5,11 @@ naval AI with two difficulty settings and absolutely no manners.
 
 Vanilla HTML/CSS/JavaScript. No framework, no build step, no audio files — the
 chiptune soundtrack and every explosion are synthesized live with the Web Audio
-API.
+API. The soundtrack is two original naval marches: a bugle-call fanfare on the
+title screen and a driving minor-key gallop with sonar pings during battle.
+
+The Admiral trash-talks in a speech box above the boards: a jab before each of
+its shots, a reaction after each of yours, and a nudge if you dither too long.
 
 **▶ Play it: https://bs-dist-furwwnbl.devinapps.com**
 

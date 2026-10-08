@@ -234,6 +234,23 @@ export class BattleshipAI {
 }
 
 export const TAUNTS = {
+  yourTurn: [
+    'Your move, Captain. Try to hit something this time.',
+    'Take your time. I am a computer. I have all day.',
+    'Go on, pick a square. I promise not to laugh. Out loud.',
+    'Feeling lucky? The ocean is very big.',
+    'Fire when ready. Or when brave. Whichever comes first.',
+    'Tick tock, sailor. My coffee is getting cold.',
+    'Somewhere out there is my fleet. Good luck with that.'
+  ],
+  aiAim: [
+    'My turn. Hold still, this will only sting a little.',
+    'Calculating... oh, this is going to be fun.',
+    'Eeny, meeny, miny... KABOOM.',
+    'Warming up tube three. It is my favorite tube.',
+    'Locking on. Say something nice about me first.',
+    'Let me just consult my crystal radar.'
+  ],
   aiMiss: [
     'SPLASH! The ocean files a complaint.',
     'Missed. I blame solar flares.',

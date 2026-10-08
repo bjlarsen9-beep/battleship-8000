@@ -94,7 +94,7 @@ function show(name) {
 
 /* ======================= boot sequence ======================= */
 const BOOT_LINES = [
-  'COGNITION NAVAL WORKS (C) 198X',
+  'COGNITION NAVAL WORKS (C) 1984',
   '',
   'ROM CHECK ............ OK',
   'SPRITE RAM ........... OK',
@@ -394,6 +394,7 @@ function toBattle() {
   audio.startMusic('battle');
   log('sys', 'BATTLE STATIONS! Enemy fleet detected in sector 7-G.');
   log('ai', `THE ADMIRAL 8000 — ${DIFFICULTIES[S.difficulty].label}: "${DIFFICULTIES[S.difficulty].blurb}"`);
+  admiral('yourTurn', { quiet: true });
 }
 
 function log(kind, text) {
@@ -465,9 +466,46 @@ function stale(gen) {
   return gen !== S.gameId || S.view !== 'battle';
 }
 
+/* ======================= the Admiral's mouth ======================= */
+let quipTimer = null;
+let quipTyper = null;
+function quip(text) {
+  const el = $('quipText');
+  clearInterval(quipTyper);
+  let i = 0;
+  el.textContent = '';
+  quipTyper = setInterval(() => {
+    i += 1;
+    el.textContent = text.slice(0, i);
+    if (i >= text.length) clearInterval(quipTyper);
+  }, 18);
+  const box = $('quip');
+  box.classList.remove('is-new');
+  void box.offsetWidth;
+  box.classList.add('is-new');
+}
+
+/** Pick a line, put it in the speech box and (unless quiet) the radio log. */
+function admiral(kind, { prefix = '', quiet = false } = {}) {
+  const line = taunt(kind, rng);
+  quip(line);
+  if (!quiet) log('ai', prefix + line);
+}
+
+/** Egg the player on if they are still dithering a moment from now. */
+function nudgeLater(gen, ms = 1500) {
+  clearTimeout(quipTimer);
+  const shots = shotsFired(S.enemy);
+  quipTimer = setTimeout(() => {
+    if (stale(gen) || S.turn !== 'player' || S.busy || shotsFired(S.enemy) !== shots) return;
+    admiral('yourTurn', { quiet: true });
+  }, ms);
+}
+
 async function playerFire(r, c) {
   if (S.busy || S.turn !== 'player' || S.view !== 'battle') return;
   const gen = S.gameId;
+  clearTimeout(quipTimer);
   if (S.enemy.grid[r][c] !== EMPTY) {
     audio.denied();
     log('sys', `${coordLabel(r, c)} is already a crater. Pick another.`);
@@ -491,7 +529,7 @@ async function playerFire(r, c) {
     node && node.classList.add('is-splash');
     audio.splash();
     log('you', `FIRE at ${coordLabel(r, c)} ... splash.`);
-    log('ai', taunt('playerMiss', rng));
+    admiral('playerMiss');
   } else {
     S.streak += 1;
     S.bestStreak = Math.max(S.bestStreak, S.streak);
@@ -507,10 +545,10 @@ async function playerFire(r, c) {
       banner(`${res.ship.name}\nSUNK!`);
       audio.speak('You sunk my battleship!', { pitch: 0.4 });
       log('you', `${coordLabel(r, c)} — ENEMY ${res.ship.name} (${res.ship.hull}) DESTROYED!`);
-      log('ai', taunt('playerSunk', rng));
+      admiral('playerSunk');
     } else {
       log('you', `FIRE at ${coordLabel(r, c)} ... DIRECT HIT!`);
-      log('ai', taunt('playerHit', rng));
+      admiral('playerHit');
     }
   }
 
@@ -524,7 +562,10 @@ async function playerFire(r, c) {
   S.turn = 'ai';
   S.busy = true;
   updateHud();
-  await wait(620);
+  await wait(700);
+  if (stale(gen)) return;
+  admiral('aiAim', { quiet: true });
+  await wait(650);
   if (stale(gen)) return;
   await aiTurn(gen);
 }
@@ -564,7 +605,7 @@ async function aiTurn(gen) {
   if (res.result === 'miss') {
     after && after.classList.add('is-splash');
     audio.splash();
-    log('ai', `Targeting ${coordLabel(shot.r, shot.c)} ... ${taunt('aiMiss', rng)}`);
+    admiral('aiMiss', { prefix: `Targeting ${coordLabel(shot.r, shot.c)} ... ` });
   } else {
     after && after.classList.add('is-boom');
     audio.explode();
@@ -575,9 +616,9 @@ async function aiTurn(gen) {
       markSunk($('homeBoard'), S.player, res.ship);
       banner(`YOUR ${res.ship.name}\nIS GONE`);
       audio.speak('You sunk my battleship!', { pitch: 1.1 });
-      log('ai', `${coordLabel(shot.r, shot.c)} — your ${res.ship.name} is gone. ${taunt('aiSunk', rng)}`);
+      admiral('aiSunk', { prefix: `${coordLabel(shot.r, shot.c)} — your ${res.ship.name} is gone. ` });
     } else {
-      log('ai', `${coordLabel(shot.r, shot.c)} — ${taunt('aiHit', rng)}`);
+      admiral('aiHit', { prefix: `${coordLabel(shot.r, shot.c)} — ` });
     }
   }
 
@@ -590,6 +631,7 @@ async function aiTurn(gen) {
   S.turn = 'player';
   S.busy = false;
   updateHud();
+  nudgeLater(gen, 2200);
 }
 
 /* ======================= game over ======================= */

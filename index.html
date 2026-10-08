@@ -33,6 +33,7 @@
             <span class="logo__line logo__line--1">BATTLESHIP</span>
             <span class="logo__line logo__line--2">8 0 0 0</span>
           </div>
+          <div class="atari-badge atari-badge--big"><span class="atari-badge__stripes" aria-hidden="true"></span>ATARI 1984 VERSION</div>
           <p class="subtitle">&#9670; NAVAL COMBAT SIMULATOR &#9670; 1 PLAYER VS. THE ADMIRAL &#9670;</p>
 
           <div class="attract" id="attract" aria-hidden="true"></div>
@@ -46,7 +47,7 @@
           <button class="btn btn--big pulse" id="startBtn">PRESS FIRE TO DEPLOY</button>
           <p class="blink insert-coin">&#9654; INSERT COIN &#9664;</p>
 
-          <p class="credits">HI-SCORE <b id="hiScoreTitle">000000</b> &#9642; CREDITS 99 &#9642; &copy; 198X COGNITION NAVAL WORKS</p>
+          <p class="credits">HI-SCORE <b id="hiScoreTitle">000000</b> &#9642; CREDITS 99 &#9642; &copy; 1984 COGNITION NAVAL WORKS</p>
           <p class="hint">KEYS: ARROWS MOVE &#9642; ENTER FIRE &#9642; R ROTATE &#9642; M MUTE</p>
         </div>
       </section>
@@ -85,11 +86,14 @@
           <div class="score" id="scoreBox">SCORE <b id="scoreVal">000000</b> <span class="score__hi">HI <b id="hiScoreVal">000000</b></span></div>
           <h2 class="bar__title" id="turnTitle">YOUR TURN — FIRE!</h2>
           <div class="bar__right">
+            <span class="atari-badge"><span class="atari-badge__stripes" aria-hidden="true"></span>ATARI 1984 VERSION</span>
             <span class="hud-chip" id="diffChip">BATTLE STATIONS</span>
             <button class="btn btn--tiny" id="muteBtn" title="Toggle sound">SOUND: ON</button>
             <button class="btn btn--tiny" id="quitBtn">ABORT</button>
           </div>
         </header>
+
+        <div class="quip" id="quip" aria-live="polite"><span class="quip__who">ADMIRAL 8000 &gt;</span> <span class="quip__text" id="quipText">...</span></div>
 
         <div class="battle-wrap">
           <div class="grid-panel grid-panel--enemy">

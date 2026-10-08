@@ -25,6 +25,8 @@ The fleet is the real US Navy line-up: AIRCRAFT CARRIER (USS Nimitz, 5),
 BATTLESHIP (USS Missouri, 4), CRUISER (USS Ticonderoga, 3), SUBMARINE
 (USS Nautilus, 3), DESTROYER (USS Arleigh Burke, 2). Sink one and the cabinet
 says "You sunk my battleship!" out loud via speech synthesis.
+THE ADMIRAL sails a 1980s Soviet fleet: carrier KIEV, battlecruiser KIROV,
+cruiser SLAVA, submarine DMITRY DONSKOY and destroyer SOVREMENNY.
 
 | Keys | |
 | --- | --- |

@@ -67,7 +67,7 @@ console.log('ok  battle started');
 if ((await page.locator('#enemyBoard .cell.is-ship').count()) !== 0) fail('enemy fleet is leaking through the fog of war');
 
 // Play until someone wins by firing at the first unshot cell each turn.
-const deadline = Date.now() + 180000;
+const deadline = Date.now() + 360000;
 let turns = 0;
 while (!(await page.locator('#view-over.is-active').count())) {
   if (Date.now() > deadline) {

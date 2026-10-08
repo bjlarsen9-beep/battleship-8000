@@ -3,9 +3,9 @@ import {
   BOARD_SIZE, FLEET, EMPTY, MISS, HIT, HORIZONTAL, VERTICAL,
   createBoard, canPlace, placeShip, removeShip, getShip, randomizeFleet,
   fire, fleetSunk, shotsFired, accuracy, coordLabel, makeRng, shipCells
-} from './engine.js?v=20261008';
-import { BattleshipAI, DIFFICULTIES, taunt } from './ai.js?v=20261008';
-import { Chiptune } from './audio.js?v=20261008';
+} from './engine.js?v=20261008b';
+import { BattleshipAI, DIFFICULTIES, taunt } from './ai.js?v=20261008b';
+import { Chiptune } from './audio.js?v=20261008b';
 
 const $ = (id) => document.getElementById(id);
 const audio = new Chiptune();
@@ -416,7 +416,7 @@ function renderRosters() {
       const hp = hideIntact && !ship.sunk
         ? '?'.repeat(ship.size)
         : '\u25a0'.repeat(ship.size - ship.hits) + '\u25a1'.repeat(ship.hits);
-      const label = hideIntact ? ship.name : `${ship.name} <i>${ship.hull}</i>`;
+      const label = `${ship.name} <i>${hideIntact ? ship.foe : ship.hull}</i>`;
       li.innerHTML = `<span>${label}</span><span class="hp">${hp}</span>`;
       el.appendChild(li);
     }
@@ -544,7 +544,7 @@ async function playerFire(r, c) {
       markSunk($('enemyBoard'), S.enemy, res.ship);
       banner(`${res.ship.name}\nSUNK!`);
       audio.speak('You sunk my battleship!', { pitch: 0.4 });
-      log('you', `${coordLabel(r, c)} — ENEMY ${res.ship.name} (${res.ship.hull}) DESTROYED!`);
+      log('you', `${coordLabel(r, c)} — ENEMY ${res.ship.name} (${res.ship.foe}) DESTROYED!`);
       admiral('playerSunk');
     } else {
       log('you', `FIRE at ${coordLabel(r, c)} ... DIRECT HIT!`);

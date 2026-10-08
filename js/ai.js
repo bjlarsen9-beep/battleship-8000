@@ -3,7 +3,7 @@
 // shot grid (EMPTY/MISS/HIT) plus results it is told about — it cannot peek
 // at the player's ship positions.
 
-import { EMPTY, MISS, HIT, FLEET, makeRng } from './engine.js';
+import { EMPTY, MISS, HIT, FLEET, makeRng } from './engine.js?v=20261008';
 
 export const DIFFICULTIES = {
   SHORE_LEAVE: {

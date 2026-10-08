@@ -3,9 +3,9 @@ import {
   BOARD_SIZE, FLEET, EMPTY, MISS, HIT, HORIZONTAL, VERTICAL,
   createBoard, canPlace, placeShip, removeShip, getShip, randomizeFleet,
   fire, fleetSunk, shotsFired, accuracy, coordLabel, makeRng, shipCells
-} from './engine.js';
-import { BattleshipAI, DIFFICULTIES, taunt } from './ai.js';
-import { Chiptune } from './audio.js';
+} from './engine.js?v=20261008';
+import { BattleshipAI, DIFFICULTIES, taunt } from './ai.js?v=20261008';
+import { Chiptune } from './audio.js?v=20261008';
 
 const $ = (id) => document.getElementById(id);
 const audio = new Chiptune();
